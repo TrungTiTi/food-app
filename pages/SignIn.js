@@ -25,12 +25,15 @@ const SignIn = () => {
     
       try {
         const user = await signInWithEmailAndPassword(auth,email, password)
-        .then(userCredentials => {
-          console.log('Registered with:', userCredentials.user.email);
-        })
-        .catch(error => console.log(error.message));
-
-        navigation.replace("Home")
+        // .then(userCredentials => {
+        //   // console.log('Registered with:', userCredentials.user.email);
+        // })
+        // .catch(error => console.log(error.message));
+        if(user){
+         console.log('user', user);
+         navigation.replace('test')
+        }
+        // // navigation.replace("Home")
         
       } catch (error) {
         console.log(error);
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
-    width: '90%'
+    width: '100%'
   },
   signInTitleDiv: {
     marginTop: 100,

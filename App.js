@@ -5,29 +5,37 @@ import { StyleSheet, Text, View } from 'react-native';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import HomeScreen from './pages/HomeScreen';
+import Test from './pages/Test';
+// import ListFood from './pages/ListFood';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 
 const Stack = createNativeStackNavigator();
+// const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    // <View style={styles.container}>
-    //   <SignUp />
-    // </View>
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen 
-          options={{headerShown: false}} 
-          name="Login"
-          component={SignIn}
-        />
-        < Stack.Screen 
-          name='SignUp'
-          component={SignUp}
-        />
-        < Stack.Screen 
-          name='Home'
-          component={HomeScreen}
-        />
+          <Stack.Screen 
+            options={{headerShown: false}} 
+            name="test"
+            component={Test}
+          />
+          <Stack.Screen 
+            
+            name="Login"
+            component={SignIn}
+          />
+          < Stack.Screen 
+            name='SignUp'
+            component={SignUp}
+          />
+          < Stack.Screen 
+            name='Home'
+            component={HomeScreen}
+          />
+          
       </Stack.Navigator>
     </NavigationContainer>
   );

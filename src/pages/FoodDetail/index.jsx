@@ -1,5 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { set, ref, getDatabase } from "firebase/database";
 import React, { useEffect } from "react";
 import {
   Image,
@@ -13,14 +11,13 @@ import {
 import { Divider } from "../../components/Divider";
 
 import OrderFood from "../../components/OrderFood";
+import { observer } from "mobx-react-lite";
 
-export const FoodDetail = ({ route }) => {
+const FoodDetail = ({ route }) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [comment, setComment] = React.useState();
-  const [user, setUser] = React.useState();
   const item = route.params;
 
-  const dbRealtime = getDatabase();
   const hideModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -29,32 +26,9 @@ export const FoodDetail = ({ route }) => {
     setComment(e);
   };
 
-  const getUser = async () => {
-    try {
-      const us = await AsyncStorage.getItem("user");
-      let use = us ? JSON.parse(us ? us : "") : "";
-      setUser(use);
-    } catch (err) {
-      console.log("err");
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  console.log("uuuu", user);
-  console.log("aaaa", item);
   const handleComment = () => {
-    let dateNow = new Date().toLocaleString() + "";
 
-    // set(ref(dbRealtime, "rating/" + `${item.id}/` + user && user.uid), {
-    //   id: user && user.uid,
-    //   rate: 0,
-    //   comment: comment,
-    //   date: dateNow,
-    // });
-  };
+  }
 
   return (
     <ScrollView>
@@ -107,6 +81,7 @@ export const FoodDetail = ({ route }) => {
     </ScrollView>
   );
 };
+export default FoodDetail;
 
 const styles = StyleSheet.create({
   container: {

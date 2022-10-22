@@ -12,7 +12,7 @@ import {
     limit,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { db, storage } from "../../firebase";
+import { db, storage } from "../../../firebase";
 
 export const actionsFood = Object.freeze({
     ADD_FOOD: "ADD_FOOD",

@@ -8,7 +8,7 @@ import {
     addDoc,
     getDoc,
 } from "firebase/firestore";
-import { db, storage } from "../../firebase";
+import { db, storage } from "../../../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export const actionsCategory = Object.freeze({

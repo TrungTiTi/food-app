@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -9,6 +10,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Colors } from "../global/styles";
+import { useCartStore } from "../stores/CartStore";
+import { useSignStore } from "../stores/Sign";
 
 import { Divider } from "./Divider";
 
@@ -16,28 +19,23 @@ const Cart = () => {
   const [cart, setCart] = useState();
   const [sum, setSum] = useState();
 
-  const getCart = async () => {
-    try {
-      const ca = await AsyncStorage.getItem("cart");
-      let car = ca ? JSON.parse(ca ? ca : "") : "";
-      setCart(car);
-    } catch (err) {
-      console.log("err");
-    }
-  };
+  const cartStore = useCartStore();
+  const signStore = useSignStore();
 
   useEffect(() => {
-    getCart();
     let sumI = 0;
-    if (cart) {
-      cart.forEach((e) => {
+    if (cartStore.cartData) {
+      cartStore.cartData.forEach((e) => {
         sumI += e.payment;
       });
       setSum(sumI);
     }
-  }, []);
+    console.log('cart', cartStore.cartData);
+  }, [cartStore.cartData.length]);
 
-  console.log("caaaaa", cart);
+  const addCart = async () => {
+    cartStore.addCartFirebase(signStore.userData.user.id, sum);
+  }
 
   return (
     <View style={styles.container}>
@@ -76,8 +74,8 @@ const Cart = () => {
 
         <View style={styles.cartList}>
           <ScrollView>
-            {cart ? (
-              cart.map((item, index) => (
+            {cartStore.cartData ? (
+              cartStore.cartData.map((item, index) => (
                 <View style={styles.itemCartList} key={index}>
                   <Image
                     style={{
@@ -112,7 +110,7 @@ const Cart = () => {
             <Text style={styles.nameItem}>Totals</Text>
             <Text style={styles.priceItem}>{sum} $</Text>
           </View>
-          <TouchableOpacity style={styles.orderBtn}>
+          <TouchableOpacity style={styles.orderBtn} onPress={addCart}>
             <Text
               style={{
                 fontSize: 16,

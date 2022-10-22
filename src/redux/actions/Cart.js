@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { onValue, ref, set } from "firebase/database";
 import { getDatabase } from "firebase/database";
-import { db } from "../../firebase";
+import { db } from "../../../firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const actionsCart = Object.freeze({

@@ -24,21 +24,21 @@ const WelcomeScreen = ({ navigation }) => {
         <Swiper autoplay={true}>
           <View style={styles.slideItem}>
             <Image
-              source={require("../assets/Images/Home/banner-st.jpg")}
+              source={require("../../assets/Images/Home/banner-st.jpg")}
               style={{ height: "100%", width: "100%" }}
             />
           </View>
 
           <View style={styles.slideItem}>
             <Image
-              source={require("../assets/Images/Home/banner-nd.jpg")}
+              source={require("../../assets/Images/Home/banner-nd.jpg")}
               style={{ height: "100%", width: "100%" }}
             />
           </View>
 
           <View style={styles.slideItem}>
             <Image
-              source={require("../assets/Images/Home/banner-rd.jpg")}
+              source={require("../../assets/Images/Home/banner-rd.jpg")}
               style={{ height: "100%", width: "100%" }}
             />
           </View>

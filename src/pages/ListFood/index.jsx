@@ -8,61 +8,27 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Colors, parameters } from "../../global/styles";
-
 import SearchInput from "../../components/SearchInput";
 import { Divider } from "../../components/Divider";
-import {
-  collection,
-  getDocs,
-  doc,
-  setDoc,
-  deleteDoc,
-  updateDoc,
-  addDoc,
-  getDoc,
-  query,
-  where,
-} from "firebase/firestore";
-import { db, storage } from "../../firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFoodManagementStore } from "../../stores/FoodManagement";
+import { observer } from "mobx-react-lite";
 
-export const ListFood = ({ navigation, route }) => {
+const ListFood = ({ navigation, route }) => {
   const item = route.params;
-  const [listFood, setListFood] = useState();
-
-  const getFoods = async () => {
-    const q = query(
-      collection(db, "Food-product"),
-      where("type", "==", item.type)
-    );
-    const querySnapshot = await getDocs(q);
-    const listData = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setListFood(listData);
-    return listData;
-  };
-  useEffect(() => {
-    getFoods();
-  }, []);
-
-  const [gg, setGg] = useState();
-  const test = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("user");
-      setGg(JSON.parse(jsonValue));
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log("error");
-    }
-  };
+  const [listData, setListData] = useState(null);
+  const foodStore = useFoodManagementStore();
+  
+  const getList = async () => {
+    await foodStore.getFoods(item);
+    setListData(foodStore.listFood);
+     
+  }
 
   useEffect(() => {
-    test();
-  }, []);
-  console.log(gg);
+    getList()
+  }, [foodStore.test]);
 
+  
   return (
     <View style={styles.container}>
       <View
@@ -83,8 +49,8 @@ export const ListFood = ({ navigation, route }) => {
           }}
         >
           <Text style={styles.textCategory}>{item.type}</Text>
-          {listFood
-            ? listFood.map((item) => (
+          {listData
+            ? listData.map((item) => (
                 <TouchableOpacity
                   style={styles.cardFood}
                   onPress={() => navigation.navigate("FoodDetail", item)}
@@ -110,6 +76,7 @@ export const ListFood = ({ navigation, route }) => {
   );
 };
 
+export default ListFood;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

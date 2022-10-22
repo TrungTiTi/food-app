@@ -9,39 +9,20 @@ import {
 } from "react-native";
 import { Colors } from "../../../global/styles";
 
-import { categoriesData } from "../../../global/staticData";
 import { useNavigation } from "@react-navigation/core";
-import { useDispatch, useSelector } from "react-redux";
-import { getCategorys } from "../../../redux/actions/Category";
-import {
-  collection,
-  getDocs,
-  doc,
-  setDoc,
-  deleteDoc,
-  updateDoc,
-  addDoc,
-  getDoc,
-} from "firebase/firestore";
-import { db, storage } from "../../../firebase";
+import { useCategoryStore } from "../../../stores/CategoryStore";
+import { observer } from "mobx-react-lite";
 
-const HomeCategories = () => {
+const HomeCategories = observer(() => {
+  
   const [indexCheck, setIndexCheck] = React.useState("0");
-
   const navigation = useNavigation();
-  const [cateData, setCateData] = useState();
 
-  const getCates = async () => {
-    const data = await getDocs(collection(db, "category"));
-    const cateList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    setCateData(cateList);
-    return cateList;
-  };
+  const categoryStore = useCategoryStore();
+
   useEffect(() => {
-    getCates();
-  }, []);
-
-  console.log("sadsa", cateData);
+    categoryStore.getCates();
+  }, [categoryStore.categoryData.length]);
 
   return (
     <View styles={styles.container}>
@@ -57,7 +38,7 @@ const HomeCategories = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={cateData}
+          data={categoryStore.categoryData ? categoryStore.categoryData : null}
           keyExtractor={(item) => item.id}
           extraData={indexCheck}
           renderItem={({ item }) => (
@@ -89,7 +70,7 @@ const HomeCategories = () => {
       </View>
     </View>
   );
-};
+});
 
 export default HomeCategories;
 

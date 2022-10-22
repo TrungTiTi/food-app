@@ -8,8 +8,8 @@ import WelcomeScreen from "../pages/WelcomeScreen";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import RootClientTabs from "./ClientTabs";
-import { FoodDetail } from "../pages/FoodDetail";
-import { ListFood } from "../pages/ListFood";
+import FoodDetail from "../pages/FoodDetail";
+import ListFood from "../pages/ListFood";
 import Cart from "../components/Cart";
 
 const Auth = createNativeStackNavigator();

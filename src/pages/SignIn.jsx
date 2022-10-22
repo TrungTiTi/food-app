@@ -16,15 +16,18 @@ import {
 
 import { Checkbox } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
+import { observer} from "mobx-react-lite";
+import { useSignStore } from "../../src/stores/Sign";
 
-const SignIn = ({ navigation }) => {
+const SignIn = observer(({navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(true);
   const [isSelected, setSelection] = useState(false);
 
-  //const navigation = useNavigation();
+  // import
+  const signStore = useSignStore();
 
   useEffect(() => {
     if (isSelected) {
@@ -35,34 +38,21 @@ const SignIn = ({ navigation }) => {
   }, [isSelected]);
 
   const handleSignIn = async () => {
-    AsyncStorage.clear();
-
-    AsyncStorage.setItem("cart", "[]");
-    if (email !== "trung@gmail.com") {
-      try {
-        const user = await signInWithEmailAndPassword(auth, email, password);
-        console.log("ddd", user);
-        AsyncStorage.setItem("user", JSON.stringify(user.user));
-        navigation.navigate("RootClientTabs");
-      } catch (error) {
-        console.log(error);
-      }
-      // try {
-      //   const user = await signInWithEmailAndPassword(auth, email, password)
-      //     .then((userCredentials) => {
-      //       console.log("Registered with:", userCredentials.user.email);
-      //     })
-      //     .catch((error) => console.log(error.message));
-      //   if (user) {
-      //     navigation.navigate("RootClientTabs");
-      //   } else {
-      //     alert("err");
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-    } else {
-      alert("Account incorrect!");
+    const data = {
+      email: email,
+      password: password
     }
+    // 
+    signStore.signIn(data, navigation);
+    // try {
+    //   signStore.signIn(data);
+    //   if(signStore.userData){
+    //     navigation.navigate("RootClientTabs");
+    //   }
+    // } catch (error) {
+      
+    // }
+    
   };
 
   return (
@@ -110,7 +100,7 @@ const SignIn = ({ navigation }) => {
       </View>
     </KeyboardAvoidingView>
   );
-};
+});
 
 export default SignIn;
 

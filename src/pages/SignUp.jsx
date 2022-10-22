@@ -1,14 +1,4 @@
 import { useNavigation } from "@react-navigation/core";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  setDoc,
-} from "firebase/firestore";
-
-import { db, auth } from "../firebase";
 import React, { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -17,10 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView
 } from "react-native";
 import { Checkbox } from "react-native-paper";
+import { observer } from 'mobx-react-lite';
+import { useSignStore } from "../../src/stores/Sign";
 
-const SignUp = () => {
+const SignUp = observer(() => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -29,6 +22,9 @@ const SignUp = () => {
   const [isSelected, setSelection] = useState(false);
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState();
+
+// import store
+  const signStore = useSignStore();
 
   useEffect(() => {
     if (isSelected) {
@@ -39,29 +35,17 @@ const SignUp = () => {
   }, [isSelected]);
 
   const handleSignUp = async () => {
-    let user = null;
     try {
-      user = await createUserWithEmailAndPassword(auth, email, password);
-      const docRef = doc(db, "users", user?.user.uid);
-
-      if (user) {
-        setDoc(docRef, {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          address: address,
-          phone: phone,
-          role: "user",
-        });
-      }
-      // .then((userCredentials) => {
-      //   const user = userCredentials.user;
-      //   console.log("Registered with:", user.email);
-      // })
-      // .catch((error) => alert(error.message));
-      alert("Success!");
+      const data = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        address: address,
+        phone: phone,
+    }
+      await signStore.signUp(data);
     } catch (error) {
-      console.log(error);
+      console.log('err', error);
     }
   };
 
@@ -70,6 +54,7 @@ const SignUp = () => {
   };
 
   return (
+    <ScrollView>
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.signUpTitleDiv}>
         <Text style={styles.signUpTitleText}> Sign Up </Text>
@@ -134,8 +119,9 @@ const SignUp = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    </ScrollView>
   );
-};
+});
 
 export default SignUp;
 

@@ -12,14 +12,15 @@ import { Colors } from "../global/styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Divider } from "../components/Divider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCartStore } from "../stores/CartStore";
+import { observer } from "mobx-react-lite";
 
 const OrderFood = ({ modal, hideModal, itemFood }) => {
   const [qnt, setQnt] = React.useState(1);
 
-  console.log(itemFood);
-
+  const cartStore = useCartStore();
   const handleAddQnt = () => {
+    
     setQnt(qnt + 1);
   };
 
@@ -28,26 +29,20 @@ const OrderFood = ({ modal, hideModal, itemFood }) => {
   };
 
   const handleAddFood = async () => {
-    try {
-      let ca = await AsyncStorage.getItem("cart");
-      let cart = ca ? JSON.parse(ca) : "";
+    const cartList = {
+      name: itemFood.name,
+      type: itemFood.type,
+      price: itemFood.price,
+      des: itemFood.des,
+      image: itemFood.image,
+      count: qnt,
+      payment: qnt * itemFood.price,
+      id: itemFood.id,
+    };
 
-      const cartList = {
-        name: itemFood.name,
-        type: itemFood.type,
-        price: itemFood.price,
-        des: itemFood.des,
-        image: itemFood.image,
-        count: qnt,
-        payment: qnt * itemFood.price,
-        id: itemFood.id,
-      };
-
-      if (cart.findIndex((item) => item.id === id) === -1) {
-        cart.push(cartList);
-        AsyncStorage.setItem("cart", JSON.stringify(cart));
-      }
-    } catch (error) {}
+    await cartStore.addCartStorage(cartList);
+    
+    console.log('151515', cartStore.cartData);
   };
 
   return (

@@ -1,31 +1,50 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { Colors, parameters } from "../../../global/styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import IconBadge from "react-native-icon-badge";
 
+import SearchInput from "../../../components/SearchInput";
+import { useNavigation } from "@react-navigation/core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const HeaderHome = () => {
-  const [count, setCount] = React.useState(1);
+  const navigation = useNavigation();
+  const [cart, setCart] = useState(0);
+  const getCart = async () => {
+    try {
+      const ca = await AsyncStorage.getItem("cart");
+      let car = ca ? JSON.parse(ca ? ca : "") : "";
+      setCart(car.length);
+    } catch (err) {
+      console.log("err");
+    }
+  };
+
+  useEffect(() => {
+    getCart();
+  }, []);
 
   return (
     <>
       <View style={styles.header}>
-        <View style={styles.container}>
-          <Icon name="menu" size={34} color={Colors.cardbackground} />
+        <View style={{}}>
+          <SearchInput searchWidth={90} />
         </View>
 
-        <View style={styles.container}>
-          <Text style={styles.textHeading}>Home</Text>
-        </View>
-
-        <View style={styles.container}>
-          <IconBadge
+        <Pressable
+          style={styles.container}
+          onPress={() => {
+            navigation.navigate("Your Cart");
+          }}
+        >
+          {/* <IconBadge
             MainElement={
               <Icon name="cart" size={36} color={Colors.cardbackground} />
             }
-            BadgeElement={
-              <Text style={{ color: Colors.cardbackground }}>{count}</Text>
-            }
+            // BadgeElement={
+            //   <Text style={{ color: Colors.cardbackground }}></Text>
+            // }
             IconBadgeStyle={{
               position: "absolute",
               top: 8,
@@ -34,9 +53,9 @@ const HeaderHome = () => {
               height: 20,
               backgroundColor: "red",
             }}
-            Hidden={count === 0}
-          />
-        </View>
+          /> */}
+          <Icon name="cart" size={36} color={Colors.cardbackground} />
+        </Pressable>
       </View>
     </>
   );
@@ -48,10 +67,10 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     backgroundColor: Colors.buttons,
-    height: 80,
-    justifyContent: "space-between",
+    height: 120,
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 20,
+    justifyContent: "space-between",
   },
   textHeading: {
     fontSize: 24,

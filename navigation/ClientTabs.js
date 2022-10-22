@@ -5,6 +5,8 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 
 import HomeScreen from "../pages/Home/HomeScreen";
 
+import AccountScreen from "../pages/Account";
+
 const ClientTabs = createBottomTabNavigator();
 
 export default function RootClientTabs() {
@@ -27,20 +29,8 @@ export default function RootClientTabs() {
       />
 
       <ClientTabs.Screen
-        name="SearchScreen"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: "Search",
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="search" color={color} size={size} />
-          ),
-          headerShown: false,
-        }}
-      />
-
-      <ClientTabs.Screen
-        name="MyAccountScreen"
-        component={HomeScreen}
+        name="AccountScreen"
+        component={AccountScreen}
         options={{
           tabBarLabel: "MyAccount",
           tabBarIcon: ({ color, size }) => (

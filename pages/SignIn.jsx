@@ -13,7 +13,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// import CheckBox from "@react-native-community/checkbox";
+
+import { Checkbox } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../firebase";
 
 const SignIn = ({ navigation }) => {
@@ -33,19 +35,33 @@ const SignIn = ({ navigation }) => {
   }, [isSelected]);
 
   const handleSignIn = async () => {
-    try {
-      const user = await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredentials) => {
-          console.log("Registered with:", userCredentials.user.email);
-        })
-        .catch((error) => console.log(error.message));
-      if (user) {
+    AsyncStorage.clear();
+
+    AsyncStorage.setItem("cart", "[]");
+    if (email !== "trung@gmail.com") {
+      try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+        console.log("ddd", user);
+        AsyncStorage.setItem("user", JSON.stringify(user.user));
         navigation.navigate("RootClientTabs");
-      } else {
-        alert("err");
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+      // try {
+      //   const user = await signInWithEmailAndPassword(auth, email, password)
+      //     .then((userCredentials) => {
+      //       console.log("Registered with:", userCredentials.user.email);
+      //     })
+      //     .catch((error) => console.log(error.message));
+      //   if (user) {
+      //     navigation.navigate("RootClientTabs");
+      //   } else {
+      //     alert("err");
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+    } else {
+      alert("Account incorrect!");
     }
   };
 
@@ -70,11 +86,13 @@ const SignIn = ({ navigation }) => {
         />
       </View>
       <View style={styles.checkboxContainer}>
-        {/* <CheckBox
-                      value={isSelected}
-                      onValueChange={setSelection}
-                      style={styles.checkbox}
-                    /> */}
+        <Checkbox
+          status={isSelected ? "checked" : "unchecked"}
+          onPress={() => {
+            setSelection(!isSelected);
+          }}
+          style={styles.checkbox}
+        />
         <Text style={styles.label}> Show password ? </Text>
       </View>
       <View style={styles.buttonContainer}>
@@ -156,6 +174,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     flexDirection: "row",
     marginBottom: 20,
+    alignItems: "center",
   },
   checkbox: {
     alignSelf: "center",

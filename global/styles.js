@@ -11,4 +11,5 @@ export const Colors = {
 
 export const parameters = {
     headerHeight: 50,
+    paddingPage: 20,
 };

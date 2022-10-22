@@ -6,15 +6,20 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import HeaderHome from "./components/HeaderHome";
 import HomeCategories from "./components/HomeCategories";
+import PromotionHome from "./components/PromotionHome";
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <HeaderHome />
-      <HomeCategories />
+      <ScrollView>
+        <HeaderHome />
+        <HomeCategories />
+        <PromotionHome />
+      </ScrollView>
     </View>
   );
 };

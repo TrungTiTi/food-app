@@ -51,6 +51,7 @@ const WelcomeScreen = ({ navigation }) => {
             style={styles.loginBtn}
             onPress={() => {
               navigation.navigate("SignIn");
+              //navigation.navigate("RootClientTabs");
             }}
           >
             <Text style={styles.loginBtnTitle}>Sign In</Text>

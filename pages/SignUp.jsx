@@ -1,5 +1,14 @@
 import { useNavigation } from "@react-navigation/core";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
+
+import { db, auth } from "../firebase";
 import React, { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -9,9 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// import CheckBox from "@react-native-community/checkbox";
-
-import { auth } from "../firebase";
+import { Checkbox } from "react-native-paper";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +27,8 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [showPass, setShowPass] = useState(true);
   const [isSelected, setSelection] = useState(false);
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState();
 
   useEffect(() => {
     if (isSelected) {
@@ -30,22 +39,40 @@ const SignUp = () => {
   }, [isSelected]);
 
   const handleSignUp = async () => {
+    let user = null;
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredentials) => {
-          const user = userCredentials.user;
-          console.log("Registered with:", user.email);
-        })
-        .catch((error) => alert(error.message));
+      user = await createUserWithEmailAndPassword(auth, email, password);
+      const docRef = doc(db, "users", user?.user.uid);
+
+      if (user) {
+        setDoc(docRef, {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          address: address,
+          phone: phone,
+          role: "user",
+        });
+      }
+      // .then((userCredentials) => {
+      //   const user = userCredentials.user;
+      //   console.log("Registered with:", user.email);
+      // })
+      // .catch((error) => alert(error.message));
+      alert("Success!");
     } catch (error) {
       console.log(error);
     }
   };
 
+  const logErr = () => {
+    alert("Fill ");
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.signUpTitleDiv}>
-        <Text style={styles.signUpTitleText}> Sign Up </Text>{" "}
+        <Text style={styles.signUpTitleText}> Sign Up </Text>
       </View>
       <View style={styles.inputContainer}>
         <TextInput
@@ -53,43 +80,59 @@ const SignUp = () => {
           value={firstName}
           onChangeText={(text) => setFirstName(text)}
           style={styles.input}
-        />{" "}
+        />
         <TextInput
           placeholder="Last Name"
           value={lastName}
           onChangeText={(text) => setLastName(text)}
           style={styles.input}
-        />{" "}
+        />
         <TextInput
           placeholder="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
           style={styles.input}
-        />{" "}
+        />
         <TextInput
           placeholder="Password"
           value={password}
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
           secureTextEntry={showPass}
-        />{" "}
+        />
+        <TextInput
+          placeholder="Phonenumber"
+          value={phone}
+          onChangeText={(text) => setPhone(text)}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Address"
+          value={address}
+          onChangeText={(text) => setAddress(text)}
+          style={styles.input}
+        />
       </View>
       <View style={styles.checkboxContainer}>
-        {/* <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
+        <Checkbox
+          status={isSelected ? "checked" : "unchecked"}
+          onPress={() => {
+            setSelection(!isSelected);
+          }}
           style={styles.checkbox}
-        />{" "} */}
-        <Text style={styles.label}> Show password ? </Text>{" "}
+        />
+        <Text style={styles.label}> Show password ? </Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={handleSignUp}
+          onPress={
+            email && firstName && lastName && address ? handleSignUp : logErr
+          }
           style={[styles.button, styles.buttonOutline]}
         >
-          <Text style={styles.buttonOutlineText}> Register </Text>{" "}
-        </TouchableOpacity>{" "}
-      </View>{" "}
+          <Text style={styles.buttonOutlineText}> Register </Text>
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -104,7 +147,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   signUpTitleDiv: {
-    marginTop: 100,
+    marginTop: 30,
     marginBottom: 60,
   },
   signUpTitleText: {
@@ -156,6 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     flexDirection: "row",
     marginBottom: 20,
+    alignItems: "center",
   },
   checkbox: {
     alignSelf: "center",

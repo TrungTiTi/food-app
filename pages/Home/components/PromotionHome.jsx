@@ -1,52 +1,23 @@
-import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
+  View,
   FlatList,
   Pressable,
   Image,
 } from "react-native";
+import React from "react";
+
+import { promotionFood } from "../../../global/staticData";
 import { Colors } from "../../../global/styles";
 
-import { categoriesData } from "../../../global/staticData";
-import { useNavigation } from "@react-navigation/core";
-import { useDispatch, useSelector } from "react-redux";
-import { getCategorys } from "../../../redux/actions/Category";
-import {
-  collection,
-  getDocs,
-  doc,
-  setDoc,
-  deleteDoc,
-  updateDoc,
-  addDoc,
-  getDoc,
-} from "firebase/firestore";
-import { db, storage } from "../../../firebase";
-
-const HomeCategories = () => {
+const PromotionHome = () => {
   const [indexCheck, setIndexCheck] = React.useState("0");
-
-  const navigation = useNavigation();
-  const [cateData, setCateData] = useState();
-
-  const getCates = async () => {
-    const data = await getDocs(collection(db, "category"));
-    const cateList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    setCateData(cateList);
-    return cateList;
-  };
-  useEffect(() => {
-    getCates();
-  }, []);
-
-  console.log("sadsa", cateData);
 
   return (
     <View styles={styles.container}>
       <View style={styles.heading}>
-        <Text style={styles.textHeading}>Categories</Text>
+        <Text style={styles.textHeading}>Promotions available</Text>
       </View>
 
       <View
@@ -57,22 +28,19 @@ const HomeCategories = () => {
         <FlatList
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={cateData}
+          data={promotionFood}
           keyExtractor={(item) => item.id}
           extraData={indexCheck}
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
                 setIndexCheck(item.id);
-                navigation.navigate("ListFood", item);
               }}
             >
               <View style={styles.cardItem}>
                 <Image
-                  style={{ height: 60, width: 60, borderRadius: 8 }}
-                  source={{
-                    uri: `${item.image}`,
-                  }}
+                  style={{ height: 200, width: 300, borderRadius: 8 }}
+                  source={item.images}
                 />
 
                 <View
@@ -80,7 +48,7 @@ const HomeCategories = () => {
                     marginTop: 4,
                   }}
                 >
-                  <Text style={styles.cardText}>{item.type}</Text>
+                  <Text style={styles.cardText}>{item.name}</Text>
                 </View>
               </View>
             </Pressable>
@@ -91,7 +59,7 @@ const HomeCategories = () => {
   );
 };
 
-export default HomeCategories;
+export default PromotionHome;
 
 const styles = StyleSheet.create({
   container: {
@@ -113,8 +81,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 12,
     paddingBottom: 8,
-    width: 80,
-    height: 100,
     margin: 10,
     borderRadius: 12,
   },

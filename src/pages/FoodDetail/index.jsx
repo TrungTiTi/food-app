@@ -11,12 +11,23 @@ import {
 import { Divider } from "../../components/Divider";
 
 import OrderFood from "../../components/OrderFood";
-import { observer } from "mobx-react-lite";
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import { useCommentStore } from "../../stores/CommentStore";
+import { useSignStore } from "../../stores/Sign";
+import Comment from "../../components/Comment";
+import {onValue, ref, set} from "firebase/database";
+import { getDatabase } from "firebase/database";
 
 const FoodDetail = ({ route }) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [comment, setComment] = React.useState();
+  const [rateNumber, setRateNumber] = React.useState(2.5);
   const item = route.params;
+
+  const commentStore = useCommentStore();
+  const signStore = useSignStore();
+
+  const [cmtData, setCmtData] = React.useState();
 
   const hideModal = () => {
     setModalVisible(!modalVisible);
@@ -27,8 +38,26 @@ const FoodDetail = ({ route }) => {
   };
 
   const handleComment = () => {
-
+    commentStore.addComment(item.id, signStore.userData.user.uid, rateNumber, comment);
   }
+
+  const ratingCompleted = (rating) => {
+    setRateNumber(rating);
+  }
+
+  useEffect(() => {
+    const dbRealtime = getDatabase();
+    onValue(ref(dbRealtime, `rating/${item.id}`), (snapshot) => {
+      setCmtData([]);
+        const data = snapshot.val();
+        
+        if (data !== null) {
+        Object.values(data).map((todo) => {
+          setCmtData((old) => ([...old, todo]))
+        });
+        }
+    });
+  },[]);
 
   return (
     <ScrollView>
@@ -65,17 +94,33 @@ const FoodDetail = ({ route }) => {
           </View>
         </View>
         <Divider />
-        <View style={{ height: 150 }}>
+        <View style={{ height: 150, padding: 20 }}>
           <Text>Comment</Text>
           <TextInput
             onChangeText={(e) => onChangeComment(e)}
             value={comment}
             placeholder="Your Comment"
           />
-          <TouchableOpacity onPress={handleComment()}>
+           <Rating
+            // showRating
+            onFinishRating={ratingCompleted}
+            imageSize={30}
+            ratingCount={5}
+          />
+          <TouchableOpacity style={styles.btnCmt} onPress={handleComment}>
             <Text>Comment</Text>
           </TouchableOpacity>
         </View>
+        <View style={{ height: 150, padding: 20 }}>
+        {
+          cmtData && cmtData.map((item, index) => (
+            <View key={index}>
+              <Comment item={item} />
+            </View>
+          ))
+        }
+        </View>
+        
       </View>
       <OrderFood modal={modalVisible} hideModal={hideModal} itemFood={item} />
     </ScrollView>
@@ -104,4 +149,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
+  btnCmt: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 10,
+  },
+  btnO: {
+    opacity: 0.5
+  }
 });

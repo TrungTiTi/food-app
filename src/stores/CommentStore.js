@@ -9,29 +9,54 @@ import {
     onSnapshot,
     setDoc,
   } from "firebase/firestore";
+import {onValue, ref, set} from "firebase/database";
+import { getDatabase } from "firebase/database";
 
 export class CommentStore {
     loading = true;
-    categoryData = [];
+    commentData = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    getCates = async () => {
+    addComment = async (foodID, userID, rating, comment) => {
+        const dbRealtime = getDatabase();
         try {
             
             this.loading = false;
-            const data = await getDocs(collection(db, "category"));
-            const cateList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-            this.categoryData = cateList;
-
+            let dateNow = new Date().toLocaleString() + "";
+        
+            set(ref(dbRealtime, 'rating/' + `${foodID}/` + userID ), {
+                id: userID,
+                rate: rating,
+                comment: comment,
+                date: dateNow
+                    
+            })
             this.loading = true;
         } catch (error) {
-            
+            alert(error)
         }
       };
     
+    // getCommentByUserId = async (id) => {
+    //     try {
+    //         const dbRealtime = getDatabase();
+    //         onValue(ref(dbRealtime, `rating/${id}`), (snapshot) => {
+    //             this.commentData = [];
+    //             const data = snapshot.val();
+                
+    //             if (data !== null) {
+    //             Object.values(data).map((todo) => {
+    //                 this.commentData = [...this.commentData, todo];
+    //             });
+    //             }
+    //         });
+    //     } catch (error) {
+    //         alert(error);
+    //     }
+    // }
 }
 
 export const commentStore = new CommentStore();

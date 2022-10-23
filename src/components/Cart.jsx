@@ -12,12 +12,14 @@ import {
 import { Colors } from "../global/styles";
 import { useCartStore } from "../stores/CartStore";
 import { useSignStore } from "../stores/Sign";
-
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { Divider } from "./Divider";
 
 const Cart = () => {
-  const [cart, setCart] = useState();
+  const [check, setCheck] = useState(false);
   const [sum, setSum] = useState();
+  const [userData, setUserData] = useState();
 
   const cartStore = useCartStore();
   const signStore = useSignStore();
@@ -30,12 +32,28 @@ const Cart = () => {
       });
       setSum(sumI);
     }
-    console.log('cart', cartStore.cartData);
-  }, [cartStore.cartData.length]);
+  }, [cartStore.cartData.length, check]);
 
   const addCart = async () => {
-    cartStore.addCartFirebase(signStore.userData.user.id, sum);
+    cartStore.addCartFirebase(signStore.userData.user.uid, sum);
+    cartStore.cartData = [];
+    setCheck(!check);
+    alert('Success');
   }
+
+  const getUser = async() => {
+    try {
+        const data = await getDoc(doc(db,'users', signStore.userData.user.uid));
+        if(data.exists()){
+            setUserData(data.data()) ;
+        }   
+    } catch (error) {
+        console.log('errrr', error);
+    }
+  } 
+  useEffect(() => {
+    getUser();
+  },[]);
 
   return (
     <View style={styles.container}>
@@ -59,7 +77,7 @@ const Cart = () => {
               marginLeft: 20,
             }}
           >
-            Hiếu lê
+            {userData && userData.lastName + ' ' + userData.firstName}
           </Text>
           <Text
             style={{

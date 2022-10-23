@@ -29,6 +29,7 @@
     "react-native": "0.69.6",
     "react-native-icon-badge": "^1.1.3",
     "react-native-paper": "^4.12.5",
+    "react-native-ratings": "^8.1.0",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.7",

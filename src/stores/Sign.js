@@ -8,12 +8,14 @@ import {
     doc,
     onSnapshot,
     setDoc,
+    getDoc
   } from "firebase/firestore";
 
 export class SignStore {
     loading = true;
     userData = [];
     test = false;
+    userProfile = [];
 
     constructor() {
         makeAutoObservable(this);
@@ -68,6 +70,17 @@ export class SignStore {
             alert(error);
         }
     }
+
+    getUserProfile = async(idUser) => {
+      try {
+          const data = await getDoc(doc(db,'users', idUser));
+          if(data.exists()){
+              this.userProfile = data.data();
+          }   
+      } catch (error) {
+          console.log('errrr', error);
+      }
+  } 
     
 }
 

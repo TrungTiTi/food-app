@@ -11,6 +11,7 @@ import RootClientTabs from "./ClientTabs";
 import FoodDetail from "../pages/FoodDetail";
 import ListFood from "../pages/ListFood";
 import Cart from "../components/Cart";
+import DetailOrder from "../components/DetailOrder";
 
 const Auth = createNativeStackNavigator();
 
@@ -62,6 +63,14 @@ export default function AuthStack() {
       <Auth.Screen
         name="Your Cart"
         component={Cart}
+        options={{
+          headerTitleAlign: "center",
+        }}
+      />
+
+      <Auth.Screen
+        name="Order"
+        component={DetailOrder}
         options={{
           headerTitleAlign: "center",
         }}

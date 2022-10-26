@@ -22,11 +22,11 @@ export class CommentStore {
 
     addComment = async (foodID, userID, rating, comment) => {
         const dbRealtime = getDatabase();
+        
         try {
             
             this.loading = false;
-            let dateNow = new Date().toLocaleString() + "";
-        
+            let dateNow = new Date().toLocaleString() ;
             set(ref(dbRealtime, 'rating/' + `${foodID}/` + userID ), {
                 id: userID,
                 rate: rating,

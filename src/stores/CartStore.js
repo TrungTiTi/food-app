@@ -8,7 +8,7 @@ import {
     doc,
     onSnapshot,
     setDoc,
-    query, where, getDoc
+    query, where, getDoc, orderBy
 } from "firebase/firestore";
 import {onValue, ref, set} from "firebase/database";
 import { getDatabase } from "firebase/database";
@@ -17,17 +17,20 @@ export class CartStore {
     loading = true;
     cartData = [];
     orderData = [];
+    orderItem = [];
+    allCartItem = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    addCartStorage = async (cartList) => {
+    addCartStorage = async (cartList, navigation) => {
         try {
             this.loading = false;
               if (this.cartData.findIndex((item) => item.id === cartList.id) === -1) {
                     this.cartData = [...this.cartData, cartList]
                     this.loading = true;
+                    navigation.navigate('Your Cart')
               }
               this.loading = true;
         } catch (error) {
@@ -39,7 +42,7 @@ export class CartStore {
         const dbRealtime = getDatabase();
        try {
             this.loading = false;
-            let dateNow = new Date().toLocaleString() + "";
+            let dateNow = new Date();
             const docRef = await addDoc(collection(db, "carts"), {
                 total: totalOrder,
                 idUser: idUser,
@@ -63,7 +66,7 @@ export class CartStore {
             set(ref(dbRealtime, 'orders/' + `${docRef?.id}/`), {
                 id:docRef.id,
                 idUser: idUser,
-                date: dateNow,
+                date: dateNow.toLocaleString(),
                 status: false
             });   
 
@@ -97,6 +100,29 @@ export class CartStore {
             alert(error);
         }
     }
+
+    getCartItem = async (idOrder) => {
+        try {
+            const data = query(collection(db, 'cartItem'), where("idCart", "==", idOrder));
+            const querySnapshot = await getDocs(data);
+            const orderList = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            this.orderItem = orderList;
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    getAllCartItem = async () => {
+        try {
+            this.loading = false;
+            const data = await getDocs(collection(db, "cartItem"));
+            const cateList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            this.allCartItem = cateList;
+            this.loading = true;
+        } catch (error) {
+            alert(error)
+        }
+      };
 
 }
 

@@ -5,20 +5,35 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { Divider } from "./Divider";
 import { Colors } from "../global/styles";
+import OrderFood from "./OrderFood";
 
-const DetailOrder = () => {
+const DetailOrder = ({navigation, route}) => {
+  const itemOrder = route.params.item;
+  const itemInform = route.params.itemCart;
+
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const hideModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
+  console.log('itemO', itemOrder);
+  
   return (
     <>
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.icon}>
-            <Icon name="check" size={30} color="#4bf55c" />
+            {
+              itemInform.status ? 
+                <Icon name="check" size={30} color="#4bf55c" />
+                : <Icon name="close" size={30} color="brown" />
+            }
           </View>
 
-          <Text style={styles.heading}>Delivery successful</Text>
+          <Text style={styles.heading}>{itemInform.status ? 'Delivery successful' : 'Wait a minute' }</Text>
 
           <Text style={{ fontSize: 16 }}>
-            Thank you for purchasing from us !
+            {itemInform.status ? 'Thank you for purchasing from us !' : 'Sorry for the inconvenience !'}
           </Text>
         </View>
 
@@ -31,17 +46,16 @@ const DetailOrder = () => {
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              Craftsman and Wolves Craftsman and Wolves Craftsman and Wolves
-              Craftsman and Wolves
+              {itemOrder.name}
             </Text>
 
-            <Text style={{ fontSize: 16 }}>Cake</Text>
+            <Text style={{ fontSize: 16 }}>Quantity: {itemOrder.count}</Text>
           </View>
 
           <Image
             style={{ height: 80, width: 80, borderRadius: 12 }}
             source={{
-              uri: "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/95387/japanese-milk-bread.5c3e3677db6b145b659e702af3098337.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+              uri: `${itemOrder.image}`,
             }}
           />
         </View>
@@ -54,9 +68,8 @@ const DetailOrder = () => {
               marginHorizontal: 12,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total</Text>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>Total: {itemOrder.payment} $</Text>
 
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>1000000 $</Text>
           </View>
         </View>
 
@@ -64,11 +77,12 @@ const DetailOrder = () => {
       </View>
 
       <View style={styles.footerBtn}>
-        <TouchableOpacity style={styles.buyBtn}>
+        <TouchableOpacity style={styles.buyBtn} onPress={() => setModalVisible(true)}>
           <Icon name="reload" size={26} color="white" />
           <Text style={styles.textBtn}>Re-order</Text>
         </TouchableOpacity>
       </View>
+      <OrderFood modal={modalVisible} hideModal={hideModal} itemFood={itemOrder} />
     </>
   );
 };

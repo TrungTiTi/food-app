@@ -14,8 +14,10 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { Divider } from "../components/Divider";
 import { useCartStore } from "../stores/CartStore";
 import { observer } from "mobx-react-lite";
+import { useNavigation } from "@react-navigation/core";
 
 const OrderFood = ({ modal, hideModal, itemFood }) => {
+  const navigation = useNavigation();
   const [qnt, setQnt] = React.useState(1);
 
   const cartStore = useCartStore();
@@ -40,9 +42,8 @@ const OrderFood = ({ modal, hideModal, itemFood }) => {
       id: itemFood.id,
     };
 
-    await cartStore.addCartStorage(cartList);
+    await cartStore.addCartStorage(cartList, navigation);
     
-    console.log('151515', cartStore.cartData);
   };
 
   return (

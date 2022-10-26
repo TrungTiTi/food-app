@@ -18,6 +18,7 @@ import { Divider } from "./Divider";
 
 const Cart = () => {
   const [check, setCheck] = useState(false);
+  const [isRemove, setIsRemove] = useState(false);
   const [sum, setSum] = useState();
   const [userData, setUserData] = useState();
 
@@ -32,11 +33,11 @@ const Cart = () => {
       });
       setSum(sumI);
     }
-  }, [cartStore.cartData.length, check]);
+  }, [cartStore.cartData.length, check, isRemove]);
 
   const addCart = async () => {
-    cartStore.addCartFirebase(signStore.userData.user.uid, sum);
-    cartStore.cartData = [];
+    await cartStore.addCartFirebase(signStore.userData.user.uid, sum);
+    // cartStore.cartData = [];
     setCheck(!check);
     alert('Success');
   }
@@ -54,6 +55,11 @@ const Cart = () => {
   useEffect(() => {
     getUser();
   },[]);
+
+  const handleRemove = (index) => {
+    cartStore.cartData.splice(index, 1);
+    setIsRemove(!isRemove);
+  }
 
   return (
     <View style={styles.container}>
@@ -103,10 +109,13 @@ const Cart = () => {
                     }}
                     source={{ uri: `${item.image}` }}
                   />
-                  <Text numberOfLines={1} style={styles.nameItem}>
-                    {item.name}
-                  </Text>
-
+                  <View>
+                    <Text numberOfLines={1} style={styles.nameItem}>
+                      {item.name}
+                    </Text>
+                    <Text>{item.count}</Text>
+                  </View>
+                  
                   <View
                     style={{
                       flex: 1,
@@ -114,6 +123,9 @@ const Cart = () => {
                     }}
                   >
                     <Text style={styles.priceItem}>{item.price} $</Text>
+                    <TouchableOpacity style={{backgroundColor: 'red'}} onPress={() => handleRemove(index)}>
+                      <Text>Remove</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))

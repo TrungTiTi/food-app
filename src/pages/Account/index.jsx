@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "../../global/styles";
 import { Divider } from "../../components/Divider";
@@ -7,11 +7,15 @@ import { db } from "../../../firebase";
 import { useSignStore } from "../../stores/Sign";
 
 import ListOrder from "../../components/ListOrder";
+import { useCartStore } from "../../stores/CartStore";
 
 const AccountScreen = () => {
   const [userData, setUserData] = useState();
 
   const signStore = useSignStore();
+  const cartStore = useCartStore();
+
+  const [check, setCheck] = useState(false);
 
   const getUser = async () => {
     try {
@@ -27,6 +31,20 @@ const AccountScreen = () => {
   useEffect(() => {
     getUser();
   }, []);
+
+  const getOrder = async () => {
+    try {
+      await(cartStore.getAllCart(signStore.userData.user.uid));
+      setCheck(true);
+    } catch (error) {
+      alert(error)
+    }
+  }
+  useEffect(() => {
+    getOrder();
+
+  },[cartStore.cartData.length, signStore.userData, check]);
+
 
   return (
     <View style={styles.container}>
@@ -54,7 +72,7 @@ const AccountScreen = () => {
 
       <Divider />
 
-      <View
+      <ScrollView
         style={{
           marginTop: 12,
           paddingHorizontal: 12,
@@ -64,8 +82,17 @@ const AccountScreen = () => {
           History Order
         </Text>
 
-        <ListOrder />
-      </View>
+        {
+          cartStore.orderData && 
+            cartStore.orderData.map((item, index) => (
+              <View key={index} style={{paddingBottom: 20, borderBottomColor: 'grey', borderBottomWidth: 2}}>
+                <Text>Number Order: {index}</Text>
+                <ListOrder itemCart={item} />
+                
+              </View>
+            ))
+        }
+      </ScrollView>
     </View>
   );
 };
@@ -107,4 +134,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+ 
 });

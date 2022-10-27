@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -8,11 +8,19 @@ import {
   View,
   ScrollView,
 } from "react-native";
+import { useCartStore } from "../../stores/CartStore";
 import HeaderHome from "./components/HeaderHome";
 import HomeCategories from "./components/HomeCategories";
 import PromotionHome from "./components/PromotionHome";
 
 const HomeScreen = () => {
+  const cartStore = useCartStore();
+
+  useEffect(() => {
+    cartStore.getAllCartItem();
+  }, [cartStore.allCartItem]);
+
+  console.log("cartItem", cartStore.allCartItem);
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -15,6 +15,7 @@ const Comment = ({ item }) => {
   
     const signStore = useSignStore();
     const [userData, setUserData] = useState();
+
     const getA = async() => {
         try {
             const data = await getDoc(doc(db,'users', signStore.userData.user.uid));
@@ -28,6 +29,8 @@ const Comment = ({ item }) => {
     useEffect(() => {
        getA();
     },[]);
+
+    console.log('sad', item);
   
     return (
         <View>

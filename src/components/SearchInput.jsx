@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,20 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { Colors } from "../global/styles";
 
 export default function SearchInput({ searchWidth }) {
+  const [text, setText] = useState("");
+
   return (
     <KeyboardAvoidingView>
       <View style={[styles.searchArea, { width: `${searchWidth}%` }]}>
         <Icon name="search" size={32} style={styles.searchIcon} />
-        <TextInput placeholder="Search..." style={styles.searchInput} />
+        <TextInput
+          placeholder="Search..."
+          style={styles.searchInput}
+          value={text}
+          onChangeText={(text) => {
+            setText(text);
+          }}
+        />
       </View>
     </KeyboardAvoidingView>
   );

@@ -12,6 +12,7 @@ import FoodDetail from "../pages/FoodDetail";
 import ListFood from "../pages/ListFood";
 import Cart from "../components/Cart";
 import DetailOrder from "../components/DetailOrder";
+import MatchingItem from "../components/MatchingItem";
 
 const Auth = createNativeStackNavigator();
 
@@ -74,6 +75,15 @@ export default function AuthStack() {
         options={{
           headerTitleAlign: "center",
         }}
+      />
+
+      <Auth.Screen
+        name="Search"
+        component={MatchingItem}
+        options={({ route }) => ({
+          headerTitleAlign: "center",
+          title: route.params.name,
+        })}
       />
     </Auth.Navigator>
   );

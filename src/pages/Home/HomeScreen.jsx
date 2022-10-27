@@ -14,14 +14,13 @@ import HomeCategories from "./components/HomeCategories";
 import PromotionHome from "./components/PromotionHome";
 
 const HomeScreen = () => {
-  
   const cartStore = useCartStore();
 
   useEffect(() => {
     cartStore.getAllCartItem();
-  },[cartStore.allCartItem]);
+  }, [cartStore.allCartItem]);
 
-  console.log('cartItem', cartStore.allCartItem);
+  console.log("cartItem", cartStore.allCartItem);
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -42,9 +42,9 @@ const ListOrder = ({itemCart}) => {
     
   },[itemCart.id])
 
-  const testDate = new Date(itemCart.date.seconds).toLocaleDateString("en-US");
+  // const testDate = new Date(itemCart.date.seconds).toLocaleDateString("en-US");
   console.log('item', itemCart);
-  console.log('dare', testDate);
+  // console.log('dare', testDate);
   
   return (
     <View style={styles.container}>

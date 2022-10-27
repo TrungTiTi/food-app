@@ -42,7 +42,7 @@ export class CartStore {
         const dbRealtime = getDatabase();
        try {
             this.loading = false;
-            let dateNow = new Date();
+            let dateNow = new Date().toLocaleString() ;
             const docRef = await addDoc(collection(db, "carts"), {
                 total: totalOrder,
                 idUser: idUser,
